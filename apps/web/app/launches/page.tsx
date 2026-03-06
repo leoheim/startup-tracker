@@ -48,6 +48,7 @@ export default function LaunchesPage() {
 
   useEffect(() => {
     loadLaunches();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter]);
 
   async function loadLaunches() {
@@ -230,10 +231,7 @@ export default function LaunchesPage() {
           </div>
         ) : (
           <div className="grid gap-4">
-            {launches.map((launch) => {
-              if (!launch || !launch.id) return null;
-
-              return (
+            {launches.filter(l => l && l.id).map((launch) => (
                 <div
                   key={launch.id}
                   className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"
@@ -397,8 +395,7 @@ export default function LaunchesPage() {
                     </div>
                   )}
                 </div>
-              );
-            })}
+            ))}
           </div>
         )}
       </main>
