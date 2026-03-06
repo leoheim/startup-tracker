@@ -2,6 +2,10 @@
 
 A comprehensive dashboard for tracking startup launches from social media platforms and managing fundraising data. Built with Clean Architecture principles, TypeScript, and modern web technologies.
 
+## 🌐 Live Demo
+- **Application**: https://startup-tracker-web.vercel.app/
+- **API**: https://startup-tracker-api.onrender.com/api/v1/health
+
 ## ✨ Features
 
 ### Core Functionality
