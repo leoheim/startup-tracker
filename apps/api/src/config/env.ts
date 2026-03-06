@@ -12,8 +12,8 @@ const envSchema = z.object({
   // Database
   DATABASE_URL: z.string().url(),
 
-  // Redis
-  REDIS_URL: z.string().url(),
+  // Redis (optional for basic functionality)
+  REDIS_URL: z.string().url().optional(),
 
   // External APIs (optional for MVP)
   TWITTER_API_KEY: z.string().optional(),
