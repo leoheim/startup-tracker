@@ -1,21 +1,25 @@
-# 🚀 Startup Launch Tracker
+# Startup Launch Tracker
 
 A comprehensive dashboard for tracking startup launches from social media platforms and managing fundraising data. Built with Clean Architecture principles, TypeScript, and modern web technologies.
 
-## 🌐 Live Demo
-- **Application**: https://startup-tracker-web.vercel.app/
-- **API**: https://startup-tracker-api.onrender.com/api/v1/health
+## Live Demo
 
-## ✨ Features
+- Application: https://startup-tracker-web.vercel.app/
+- API: https://startup-tracker-api.onrender.com/api/v1/health
+
+## Features
 
 ### Core Functionality
-- 📊 **Dashboard** - Real-time statistics and overview of all tracked companies and launches
-- 🏢 **Company Management** - Browse and search YCombinator companies with detailed information
-- 🚀 **Launch Tracking** - Monitor startup launches with engagement metrics
-- 📈 **Analytics** - Visualize performance distribution, platform usage, and industry trends
-- 📝 **Manual Entry** - Add launches manually with comprehensive form validation
+
+- **Dashboard** - Real-time statistics and overview of all tracked companies and launches
+- **Company Management** - Browse and search YCombinator companies with detailed information
+- **Launch Tracking** - Monitor startup launches with engagement metrics
+- **Analytics** - Visualize performance distribution, platform usage, and industry trends
+- **Contact Enrichment** - Email, phone, LinkedIn, and X (Twitter) contact information for companies
+- **AI-Generated DM Drafts** - Automated outreach messages for poorly performing launches
 
 ### Metrics & Analytics
+
 - Likes, comments, shares, and views tracking
 - Automated engagement score calculation
 - Performance tier classification (Low/Medium/High)
@@ -23,14 +27,16 @@ A comprehensive dashboard for tracking startup launches from social media platfo
 - Industry distribution charts
 
 ### YCombinator Integration
+
 - Sync companies from YCombinator's public API
 - Automatically imports company metadata
 - Filters for recent batches (last 3 batches)
 - 550+ companies available for tracking
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Frontend
+
 - **Next.js 15** - React framework with App Router
 - **TypeScript** - Type-safe development
 - **Tailwind CSS** - Utility-first styling
@@ -38,23 +44,26 @@ A comprehensive dashboard for tracking startup launches from social media platfo
 - **Lucide React** - Icon library
 
 ### Backend
+
 - **Node.js 20+** - JavaScript runtime
 - **Express.js** - Web framework
 - **TypeScript** - End-to-end type safety
 - **Clean Architecture** - Maintainable, testable structure
 
 ### Database & ORM
+
 - **PostgreSQL 16+** - Relational database
 - **Drizzle ORM** - Type-safe database queries
-- **5 database tables** with relationships
+- 5 database tables with relationships
 
 ### Code Quality
+
 - **Zod** - Runtime type validation
 - **Pino** - Structured logging
 - **Helmet** - Security headers
 - **CORS** - Cross-origin resource sharing
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 startup-tracker/
@@ -66,42 +75,28 @@ startup-tracker/
 │   │   │   ├── launches/         # Launches list & new form
 │   │   │   ├── companies/        # Companies list & search
 │   │   │   └── analytics/        # Charts & visualizations
-│   │   ├── components/
-│   │   │   └── layouts/
-│   │   │       └── Header.tsx    # Navigation component
 │   │   └── lib/
 │   │       └── api-client.ts     # Type-safe API client
 │   │
 │   └── api/                      # Node.js Backend (Clean Architecture)
 │       └── src/
 │           ├── domain/           # Business logic & entities
-│           │   ├── entities/     # Company, Launch, FundingRound
-│           │   ├── interfaces/   # Repository contracts
-│           │   └── services/     # EngagementCalculator
 │           ├── application/      # Use cases
-│           │   └── use-cases/    # GetLaunches, CreateLaunch, SyncYC
 │           ├── infrastructure/   # External dependencies
-│           │   ├── database/     # Drizzle ORM & repositories
-│           │   └── external-apis/# YCClient
 │           └── presentation/     # HTTP layer
-│               ├── controllers/  # Request handlers
-│               ├── routes/       # API routes
-│               └── middlewares/  # Error handling
 │
 ├── SETUP.md                      # Detailed setup guide
 ├── ARCHITECTURE.md               # Technical architecture docs
-├── IMPLEMENTATION_SUMMARY.md     # What has been built
-├── QUICKSTART.md                 # 5-minute quick start
 └── package.json                  # Monorepo configuration
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
-- **Node.js 20+** (use [nvm](https://github.com/nvm-sh/nvm) to manage versions)
-- **PostgreSQL 16+** ([Postgres.app](https://postgresapp.com/) recommended for macOS)
-- **npm 10+** (comes with Node.js)
+- Node.js 20+ (use [nvm](https://github.com/nvm-sh/nvm) to manage versions)
+- PostgreSQL 16+ ([Postgres.app](https://postgresapp.com/) recommended for macOS)
+- npm 10+ (comes with Node.js)
 
 ### Installation
 
@@ -117,20 +112,12 @@ startup-tracker/
 
 3. **Create the database**
    ```bash
-   # Using Postgres.app or psql
    createdb startup_tracker
-
-   # Or using Postgres.app UI:
-   # Open Postgres.app → click "+" → name it "startup_tracker"
    ```
 
 4. **Run the SQL migration**
    ```bash
-   # Using Postgres.app
    /Applications/Postgres.app/Contents/Versions/latest/bin/psql -d startup_tracker -f apps/api/create-tables.sql
-
-   # Or if psql is in your PATH:
-   psql -d startup_tracker -f apps/api/create-tables.sql
    ```
 
 5. **Set up environment variables**
@@ -159,22 +146,29 @@ startup-tracker/
    - API: http://localhost:3001/api/v1
    - Health Check: http://localhost:3001/api/v1/health
 
-## 📖 Usage Guide
+## Usage Guide
 
-### 1. Sync YCombinator Companies
+### 1. Load Dashboard Data
 
 1. Navigate to the Dashboard (http://localhost:3000/dashboard)
-2. Click the "Sync YC Companies" button
-3. Wait for confirmation (syncs 550 companies from the last 3 batches)
+2. Click the "Load Dashboard Data" button
+3. Wait for confirmation (syncs 550+ companies and generates sample launches)
 
 ### 2. Browse Companies
 
 1. Go to Companies page (http://localhost:3000/companies)
 2. Use the search bar to filter by name, industry, or YC batch
-3. View company statistics in the overview cards
-4. Click website links to visit company sites
+3. View company statistics and funding information
+4. Click "View Contacts" to see enriched contact information
 
-### 3. Add a Launch
+### 3. View Launches
+
+1. Navigate to Launches page (http://localhost:3000/launches)
+2. View all startup launches with engagement metrics
+3. Filter by performance tier (All/Low/Medium/High)
+4. Click on launches to view detailed metrics
+
+### 4. Add a Launch
 
 1. Navigate to Launches → "Add New Launch" (http://localhost:3000/launches/new)
 2. Select a company from the dropdown
@@ -188,7 +182,7 @@ The system will automatically:
 - Assign a performance tier (Low/Medium/High)
 - Store the launch in the database
 
-### 4. View Launch Analytics
+### 5. View Analytics
 
 1. Go to Analytics page (http://localhost:3000/analytics)
 2. View performance distribution pie chart
@@ -196,14 +190,7 @@ The system will automatically:
 4. Explore top 10 industries
 5. Monitor key metrics: total launches, avg likes, total comments/shares
 
-### 5. Track Launches
-
-1. Visit the Launches page (http://localhost:3000/launches)
-2. Filter by performance tier (All/Low/Medium/High)
-3. View engagement metrics for each launch
-4. Click "View" to open the original post
-
-## 🏗️ Architecture Highlights
+## Architecture Highlights
 
 ### Clean Architecture Layers
 
@@ -236,29 +223,37 @@ Performance Tiers:
 
 - **companies** - Startup information (550 from YC)
 - **launches** - Social media launch posts with metrics
-- **funding_rounds** - Fundraising data (ready for integration)
-- **contacts** - Enriched contact information (ready for integration)
-- **dm_campaigns** - DM automation tracking (ready for integration)
+- **funding_rounds** - Fundraising data
+- **contacts** - Enriched contact information
+- **dm_campaigns** - DM automation tracking
 
-## 🧪 API Endpoints
+## API Endpoints
 
 ### Companies
+
 - `GET /api/v1/companies` - List all companies (with pagination)
 - `GET /api/v1/companies/:id` - Get company by ID
 - `POST /api/v1/companies` - Create new company
 
 ### Launches
+
 - `GET /api/v1/launches` - List all launches (with filters)
 - `GET /api/v1/launches/:id` - Get launch by ID
 - `POST /api/v1/launches` - Create new launch
 
 ### Sync
+
 - `POST /api/v1/sync/yc` - Sync YCombinator companies
 
+### Seed
+
+- `POST /api/v1/seed/sample-data` - Generate sample launch data
+
 ### Health
+
 - `GET /api/v1/health` - Health check endpoint
 
-## 🔒 Security Features
+## Security Features
 
 - Input validation with Zod schemas
 - SQL injection prevention (Drizzle ORM)
@@ -268,28 +263,7 @@ Performance Tiers:
 - Error message sanitization
 - Type-safe database queries
 
-## 📚 Additional Documentation
-
-- **[SETUP.md](./SETUP.md)** - Complete setup guide with troubleshooting
-- **[ARCHITECTURE.md](./ARCHITECTURE.md)** - Deep dive into technical architecture
-- **[QUICKSTART.md](./QUICKSTART.md)** - Get started in 5 minutes
-- **[IMPLEMENTATION_SUMMARY.md](./IMPLEMENTATION_SUMMARY.md)** - What has been built
-
-## 🎯 Future Enhancements
-
-### Planned Features
-- Twitter/X API integration for automated scraping
-- LinkedIn API integration
-- Crunchbase API for fundraising data
-- Background jobs with BullMQ + Redis
-- Contact enrichment (Hunter.io, Apollo.io)
-- AI-powered DM generation for outreach
-- Advanced filtering and sorting
-- Export functionality (CSV, JSON)
-- User authentication
-- Multi-user support with teams
-
-## 🤝 Development Commands
+## Development Commands
 
 ```bash
 # Install dependencies
@@ -316,16 +290,17 @@ npm run lint --workspace=apps/api
 npm run lint --workspace=apps/web
 ```
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Database Connection Error
+
 ```bash
 # Verify PostgreSQL is running
-# For Postgres.app: Check if the app is running
 # Check your DATABASE_URL in apps/api/.env
 ```
 
 ### Port Already in Use
+
 ```bash
 # Frontend (3000) or Backend (3001) port conflicts
 # Kill the process:
@@ -334,28 +309,28 @@ lsof -ti:3001 | xargs kill -9
 ```
 
 ### Node Version Error
+
 ```bash
 # Use Node 20+ (LTS recommended)
 nvm use 20.19.6
 nvm alias default 20.19.6
 ```
 
-## 📄 License
+## License
 
 MIT License - feel free to use this project for learning and development.
 
-## 👨‍💻 Development Notes
+## Technical Implementation
 
 This project demonstrates:
-- ✅ Clean Architecture implementation
-- ✅ TypeScript best practices
-- ✅ Type-safe full-stack development
-- ✅ Modern React patterns (Server Components, App Router)
-- ✅ Database design and ORM usage
-- ✅ API design and RESTful principles
-- ✅ Security best practices
-- ✅ Professional documentation
 
----
+- Clean Architecture implementation
+- TypeScript best practices
+- Type-safe full-stack development
+- Modern React patterns (Server Components, App Router)
+- Database design and ORM usage
+- API design and RESTful principles
+- Security best practices
+- Professional documentation
 
-**Built with attention to detail and following software engineering best practices.**
+Built with attention to detail and following software engineering best practices.

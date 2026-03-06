@@ -71,7 +71,7 @@ export default function DashboardPage() {
       // Add DM drafts for poorly performing launches
       const enrichedLaunches = launchesRes.data.map(launch => {
         const dmDraft = launch.performanceTier === 'low'
-          ? `Hi there! 👋\n\nI noticed your recent launch on ${launch.platform === 'twitter' ? 'X' : 'LinkedIn'}. I've been following your journey and think there's huge potential here.\n\nI'd love to connect and discuss ways to amplify your reach. We've helped similar startups increase their engagement by 300%+ through strategic positioning.\n\nWould you be open to a quick 15-min chat this week?\n\nBest regards`
+          ? `Hi there!\n\nI noticed your recent launch on ${launch.platform === 'twitter' ? 'X' : 'LinkedIn'}. I've been following your journey and think there's huge potential here.\n\nI'd love to connect and discuss ways to amplify your reach. We've helped similar startups increase their engagement by 300%+ through strategic positioning.\n\nWould you be open to a quick 15-min chat this week?\n\nBest regards`
           : undefined;
 
         return {
@@ -245,7 +245,7 @@ export default function DashboardPage() {
             disabled={syncing}
             className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transition-all"
           >
-            {syncing ? '⏳ Loading Data... (10-30 seconds)' : '🚀 Load Dashboard Data'}
+            {syncing ? 'Loading Data... (10-30 seconds)' : 'Load Dashboard Data'}
           </button>
           {syncing && (
             <p className="mt-2 text-sm text-gray-600">
