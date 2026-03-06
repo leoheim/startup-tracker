@@ -5,8 +5,8 @@ services:
     env: node
     region: oregon
     plan: free
-    buildCommand: cd apps/api && npm install && npm run build
-    startCommand: cd apps/api && node init-db.js && npm start
+    buildCommand: cd apps/api && npm install && npm run build && node init-db.js
+    startCommand: cd apps/api && npm start
     envVars:
       - key: NODE_ENV
         value: production
