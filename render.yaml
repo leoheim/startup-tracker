@@ -19,7 +19,7 @@ services:
           name: startup-tracker-db
           property: connectionString
       - key: FRONTEND_URL
-        value: https://your-vercel-app.vercel.app
+        value: https://startup-tracker-web.vercel.app
       - key: RATE_LIMIT_WINDOW_MS
         value: 900000
       - key: RATE_LIMIT_MAX_REQUESTS
