@@ -56,11 +56,11 @@ export default function LaunchesPage() {
       const params = filter !== 'all' ? `?performanceTier=${filter}` : '';
       const res = await apiClient.get<Launch[]>(`/launches${params}`);
 
-      if (res.success && res.data) {
+      if (res.success && res.data && Array.isArray(res.data)) {
         // Enrich launches with contact info and DM drafts
         const enrichedLaunches = res.data.map(launch => {
           const contactInfo = {
-            email: `contact@company-${launch.companyId}.com`,
+            email: `contact@company-${launch.companyId || 'startup'}.com`,
             phone: `+1 (555) ${Math.floor(Math.random() * 900 + 100)}-${Math.floor(Math.random() * 9000 + 1000)}`,
             linkedinUrl: `https://linkedin.com/in/${launch.authorHandle || 'founder'}`,
             twitterHandle: launch.authorHandle || '@startup',
@@ -77,6 +77,8 @@ export default function LaunchesPage() {
           };
         });
         setLaunches(enrichedLaunches);
+      } else {
+        setLaunches([]);
       }
     } catch (error) {
       console.error('Error loading launches:', error);
@@ -228,177 +230,175 @@ export default function LaunchesPage() {
           </div>
         ) : (
           <div className="grid gap-4">
-            {launches.map((launch) => (
-              <div
-                key={launch.id}
-                className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span
-                        className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getPlatformColor(
-                          launch.platform
-                        )}`}
-                      >
-                        {launch.platform}
-                      </span>
-                      <span
-                        className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getTierColor(
-                          launch.performanceTier
-                        )}`}
-                      >
-                        {launch.performanceTier || 'unknown'}
-                      </span>
-                      {launch.authorHandle && (
-                        <span className="text-sm text-gray-600">
-                          @{launch.authorHandle}
+            {launches.map((launch) => {
+              if (!launch || !launch.id) return null;
+
+              return (
+                <div
+                  key={launch.id}
+                  className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"
+                >
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span
+                          className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getPlatformColor(
+                            launch.platform
+                          )}`}
+                        >
+                          {launch.platform}
                         </span>
+                        <span
+                          className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getTierColor(
+                            launch.performanceTier
+                          )}`}
+                        >
+                          {launch.performanceTier || 'unknown'}
+                        </span>
+                        {launch.authorHandle && (
+                          <span className="text-sm text-gray-600">
+                            @{launch.authorHandle}
+                          </span>
+                        )}
+                      </div>
+                      {launch.content && (
+                        <p className="text-gray-700 mb-3 line-clamp-2">
+                          {launch.content}
+                        </p>
                       )}
                     </div>
-                    {launch.content && (
-                      <p className="text-gray-700 mb-3 line-clamp-2">
-                        {launch.content}
-                      </p>
-                    )}
+                    <a
+                      href={launch.postUrl || '#'}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-700 ml-4"
+                    >
+                      <ExternalLink className="h-5 w-5" />
+                    </a>
                   </div>
-                  <a
-                    href={launch.postUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:text-blue-700 ml-4"
-                  >
-                    <ExternalLink className="h-5 w-5" />
-                  </a>
-                </div>
 
-                <div className="grid grid-cols-4 gap-4 pt-4 border-t border-gray-200">
-                  <div>
-                    <div className="text-xs text-gray-600">Likes</div>
-                    <div className="text-lg font-semibold text-gray-900">
-                      {launch.likesCount.toLocaleString()}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-xs text-gray-600">Comments</div>
-                    <div className="text-lg font-semibold text-gray-900">
-                      {launch.commentsCount.toLocaleString()}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-xs text-gray-600">Shares</div>
-                    <div className="text-lg font-semibold text-gray-900">
-                      {launch.sharesCount.toLocaleString()}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-xs text-gray-600">Engagement</div>
-                    <div className="text-lg font-semibold text-blue-600">
-                      {launch.engagementScore?.toFixed(0) || 0}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Expand Button */}
-                <button
-                  onClick={() => toggleExpanded(launch.id)}
-                  className="w-full mt-4 pt-3 border-t border-gray-200 flex items-center justify-center gap-2 text-sm text-gray-600 hover:text-gray-900"
-                >
-                  {expandedLaunches.has(launch.id) ? (
-                    <>
-                      <ChevronUp className="h-4 w-4" />
-                      Hide Details
-                    </>
-                  ) : (
-                    <>
-                      <ChevronDown className="h-4 w-4" />
-                      Show Contact Info & DM Draft
-                    </>
-                  )}
-                </button>
-
-                {/* Expanded Section */}
-                {expandedLaunches.has(launch.id) && (
-                  <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
-                    {/* Contact Enrichment */}
+                  <div className="grid grid-cols-4 gap-4 pt-4 border-t border-gray-200">
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                        <Mail className="h-4 w-4 text-blue-600" />
-                        Enriched Contact Information
-                      </h4>
-                      <div className="grid grid-cols-2 gap-3 bg-gray-50 p-4 rounded-lg">
-                        <div className="flex items-center gap-2">
-                          <Mail className="h-4 w-4 text-gray-400" />
-                          <div>
-                            <div className="text-xs text-gray-600">Email</div>
-                            <div className="text-sm text-gray-900">
-                              {launch.contactInfo?.email || 'contact@company.com'}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Phone className="h-4 w-4 text-gray-400" />
-                          <div>
-                            <div className="text-xs text-gray-600">Phone</div>
-                            <div className="text-sm text-gray-900">
-                              {launch.contactInfo?.phone || '+1 (555) 123-4567'}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Linkedin className="h-4 w-4 text-gray-400" />
-                          <div>
-                            <div className="text-xs text-gray-600">LinkedIn</div>
-                            <a
-                              href={launch.contactInfo?.linkedinUrl || '#'}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-sm text-blue-600 hover:underline"
-                            >
-                              {launch.authorHandle || 'linkedin.com/in/founder'}
-                            </a>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Twitter className="h-4 w-4 text-gray-400" />
-                          <div>
-                            <div className="text-xs text-gray-600">X (Twitter)</div>
-                            <div className="text-sm text-gray-900">
-                              @{launch.authorHandle || 'founder'}
-                            </div>
-                          </div>
-                        </div>
+                      <div className="text-xs text-gray-600">Likes</div>
+                      <div className="text-lg font-semibold text-gray-900">
+                        {(launch.likesCount || 0).toLocaleString()}
                       </div>
                     </div>
+                    <div>
+                      <div className="text-xs text-gray-600">Comments</div>
+                      <div className="text-lg font-semibold text-gray-900">
+                        {(launch.commentsCount || 0).toLocaleString()}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-xs text-gray-600">Shares</div>
+                      <div className="text-lg font-semibold text-gray-900">
+                        {(launch.sharesCount || 0).toLocaleString()}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-xs text-gray-600">Engagement</div>
+                      <div className="text-lg font-semibold text-blue-600">
+                        {launch.engagementScore?.toFixed(0) || 0}
+                      </div>
+                    </div>
+                  </div>
 
-                    {/* DM Draft for Low Performers */}
-                    {launch.performanceTier === 'low' && (
+                  {/* Expand Button */}
+                  <button
+                    onClick={() => toggleExpanded(launch.id)}
+                    className="w-full mt-4 pt-3 border-t border-gray-200 flex items-center justify-center gap-2 text-sm text-gray-600 hover:text-gray-900"
+                  >
+                    {expandedLaunches.has(launch.id) ? (
+                      <>
+                        <ChevronUp className="h-4 w-4" />
+                        Hide Details
+                      </>
+                    ) : (
+                      <>
+                        <ChevronDown className="h-4 w-4" />
+                        Show Contact Info & DM Draft
+                      </>
+                    )}
+                  </button>
+
+                  {/* Expanded Section */}
+                  {expandedLaunches.has(launch.id) && (
+                    <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
+                      {/* Contact Enrichment */}
                       <div>
                         <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                          <MessageSquare className="h-4 w-4 text-purple-600" />
-                          AI-Generated DM Draft
-                          <span className="text-xs font-normal text-gray-500">(Low Performance Outreach)</span>
+                          <Mail className="h-4 w-4 text-blue-600" />
+                          Enriched Contact Information
                         </h4>
-                        <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
-                          <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">
-                            {launch.dmDraft || `Hi ${launch.authorHandle || 'there'}! 👋
-
-I noticed your recent launch on ${launch.platform}. I wanted to reach out because I specialize in helping startups amplify their product launches and reach the right audience.
-
-I'd love to chat about strategies to boost your engagement and get more traction. Would you be open to a quick 15-minute call this week?
-
-Looking forward to connecting!`}
-                          </p>
-                          <button className="mt-3 text-xs text-purple-600 hover:text-purple-700 font-medium">
-                            Copy to Clipboard
-                          </button>
+                        <div className="grid grid-cols-2 gap-3 bg-gray-50 p-4 rounded-lg">
+                          <div className="flex items-center gap-2">
+                            <Mail className="h-4 w-4 text-gray-400" />
+                            <div>
+                              <div className="text-xs text-gray-600">Email</div>
+                              <div className="text-sm text-gray-900">
+                                {launch.contactInfo?.email || 'contact@company.com'}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Phone className="h-4 w-4 text-gray-400" />
+                            <div>
+                              <div className="text-xs text-gray-600">Phone</div>
+                              <div className="text-sm text-gray-900">
+                                {launch.contactInfo?.phone || '+1 (555) 123-4567'}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Linkedin className="h-4 w-4 text-gray-400" />
+                            <div>
+                              <div className="text-xs text-gray-600">LinkedIn</div>
+                              <a
+                                href={launch.contactInfo?.linkedinUrl || '#'}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-sm text-blue-600 hover:underline"
+                              >
+                                {launch.authorHandle || 'linkedin.com/in/founder'}
+                              </a>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Twitter className="h-4 w-4 text-gray-400" />
+                            <div>
+                              <div className="text-xs text-gray-600">X (Twitter)</div>
+                              <div className="text-sm text-gray-900">
+                                @{launch.authorHandle || 'founder'}
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            ))}
+
+                      {/* DM Draft for Low Performers */}
+                      {launch.performanceTier === 'low' && launch.dmDraft && (
+                        <div>
+                          <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                            <MessageSquare className="h-4 w-4 text-purple-600" />
+                            AI-Generated DM Draft
+                            <span className="text-xs font-normal text-gray-500">(Low Performance Outreach)</span>
+                          </h4>
+                          <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                            <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">
+                              {launch.dmDraft}
+                            </p>
+                            <button className="mt-3 text-xs text-purple-600 hover:text-purple-700 font-medium">
+                              Copy to Clipboard
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
       </main>
