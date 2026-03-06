@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { apiClient } from '@/lib/api-client';
-import { Building2, Rocket, TrendingUp, Users } from 'lucide-react';
+import { Building2, Rocket, TrendingUp, Users, DollarSign, ThumbsUp, Twitter, Linkedin } from 'lucide-react';
 import Link from 'next/link';
 
 interface Company {
@@ -11,6 +11,7 @@ interface Company {
   website?: string;
   industry?: string;
   ycBatch?: string;
+  totalFunding?: number;
 }
 
 interface Launch {
@@ -102,8 +103,8 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-10 shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="text-2xl font-bold text-blue-600">
@@ -149,45 +150,49 @@ export default function DashboardPage() {
 
         {/* Stats Cards */}
         <div className="grid md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-gray-600">Companies</span>
-              <Building2 className="h-5 w-5 text-blue-600" />
+              <span className="text-blue-100 font-medium">Companies</span>
+              <Building2 className="h-6 w-6 text-white" />
             </div>
-            <div className="text-3xl font-bold text-gray-900">{companies.length}</div>
+            <div className="text-4xl font-bold text-white">{companies.length}</div>
+            <div className="text-blue-100 text-sm mt-1">YC & More</div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <div className="bg-gradient-to-br from-green-500 to-green-600 p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-gray-600">Launches</span>
-              <Rocket className="h-5 w-5 text-green-600" />
+              <span className="text-green-100 font-medium">Launches</span>
+              <Rocket className="h-6 w-6 text-white" />
             </div>
-            <div className="text-3xl font-bold text-gray-900">{launches.length}</div>
+            <div className="text-4xl font-bold text-white">{launches.length}</div>
+            <div className="text-green-100 text-sm mt-1">X & LinkedIn</div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-gray-600">Avg Engagement</span>
-              <TrendingUp className="h-5 w-5 text-purple-600" />
+              <span className="text-purple-100 font-medium">Avg Likes</span>
+              <TrendingUp className="h-6 w-6 text-white" />
             </div>
-            <div className="text-3xl font-bold text-gray-900">
+            <div className="text-4xl font-bold text-white">
               {launches.length > 0
                 ? Math.round(
                     launches.reduce((sum, l) => sum + l.likesCount, 0) /
                       launches.length
-                  )
+                  ).toLocaleString()
                 : 0}
             </div>
+            <div className="text-purple-100 text-sm mt-1">Per Launch</div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-gray-600">High Performers</span>
-              <Users className="h-5 w-5 text-orange-600" />
+              <span className="text-orange-100 font-medium">High Performers</span>
+              <Users className="h-6 w-6 text-white" />
             </div>
-            <div className="text-3xl font-bold text-gray-900">
+            <div className="text-4xl font-bold text-white">
               {launches.filter((l) => l.performanceTier === 'high').length}
             </div>
+            <div className="text-orange-100 text-sm mt-1">Top Tier</div>
           </div>
         </div>
 
@@ -197,9 +202,9 @@ export default function DashboardPage() {
             <button
               onClick={handleSyncYC}
               disabled={syncing}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transition-all"
             >
-              {syncing ? 'Syncing... (this may take 10-30 seconds)' : 'Sync YC Companies'}
+              {syncing ? '⏳ Syncing... (10-30 seconds)' : '🔄 Sync YC Companies'}
             </button>
             {syncing && (
               <p className="mt-2 text-sm text-gray-600">
@@ -242,6 +247,9 @@ export default function DashboardPage() {
                     YC Batch
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Total Raised
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Website
                   </th>
                 </tr>
@@ -257,6 +265,18 @@ export default function DashboardPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-gray-500">
                       {company.ycBatch || '-'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {company.totalFunding ? (
+                        <div className="flex items-center gap-1">
+                          <DollarSign className="h-4 w-4 text-green-600" />
+                          <span className="font-semibold text-green-700">
+                            ${(company.totalFunding / 1000000).toFixed(1)}M
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-gray-400">-</span>
+                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-blue-600">
                       {company.website ? (
@@ -312,12 +332,26 @@ export default function DashboardPage() {
                 {launches.map((launch) => (
                   <tr key={launch.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
-                        {launch.platform}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        {launch.platform === 'twitter' ? (
+                          <>
+                            <Twitter className="h-4 w-4 text-blue-500" />
+                            <span className="text-sm font-medium text-gray-700">X (Twitter)</span>
+                          </>
+                        ) : (
+                          <>
+                            <Linkedin className="h-4 w-4 text-blue-600" />
+                            <span className="text-sm font-medium text-gray-700">LinkedIn</span>
+                          </>
+                        )}
+                      </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-900">
-                      {launch.likesCount}
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center gap-2">
+                        <ThumbsUp className="h-4 w-4 text-pink-500" />
+                        <span className="font-semibold text-gray-900">{launch.likesCount.toLocaleString()}</span>
+                        <span className="text-xs text-gray-500">likes</span>
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-gray-900">
                       {launch.commentsCount}
