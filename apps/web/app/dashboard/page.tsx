@@ -52,14 +52,23 @@ export default function DashboardPage() {
 
   async function handleSyncYC() {
     setSyncing(true);
-    const res = await apiClient.post('/sync/yc', {});
-    if (res.success) {
-      alert('YC companies synced successfully!');
-      loadData();
-    } else {
-      alert('Failed to sync YC companies');
+    try {
+      const res = await apiClient.post('/sync/yc', {});
+      if (res.success) {
+        const message = res.data?.message || 'YC companies synced successfully!';
+        alert(message);
+        await loadData();
+      } else {
+        const errorMsg = res.error || 'Failed to sync YC companies. Please try again.';
+        alert(`Error: ${errorMsg}`);
+        console.error('Sync error:', res);
+      }
+    } catch (error) {
+      alert('Unexpected error during sync. Check console for details.');
+      console.error('Sync exception:', error);
+    } finally {
+      setSyncing(false);
     }
-    setSyncing(false);
   }
 
   if (loading) {
@@ -167,8 +176,13 @@ export default function DashboardPage() {
             disabled={syncing}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {syncing ? 'Syncing...' : 'Sync YC Companies'}
+            {syncing ? 'Syncing... (this may take 10-30 seconds)' : 'Sync YC Companies'}
           </button>
+          {syncing && (
+            <p className="mt-2 text-sm text-gray-600">
+              Please wait while we sync 550+ companies from YCombinator...
+            </p>
+          )}
         </div>
 
         {/* Recent Companies */}
