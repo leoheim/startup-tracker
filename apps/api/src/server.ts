@@ -14,7 +14,30 @@ async function startServer() {
   app.use(helmet());
   app.use(
     cors({
-      origin: env.FRONTEND_URL,
+      origin: (origin, callback) => {
+        // Allow requests with no origin (like mobile apps or curl)
+        if (!origin) return callback(null, true);
+
+        // Allow Vercel preview URLs and production URL
+        const allowedOrigins = [
+          env.FRONTEND_URL,
+          /https:\/\/startup-tracker-.*\.vercel\.app$/,
+          /https:\/\/.*-leonardoheimwork-6337s-projects\.vercel\.app$/,
+        ];
+
+        const isAllowed = allowedOrigins.some(allowed => {
+          if (typeof allowed === 'string') {
+            return allowed === origin;
+          }
+          return allowed.test(origin);
+        });
+
+        if (isAllowed) {
+          callback(null, true);
+        } else {
+          callback(new Error('Not allowed by CORS'));
+        }
+      },
       credentials: true,
     })
   );
