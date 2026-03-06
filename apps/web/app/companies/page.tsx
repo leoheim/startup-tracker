@@ -5,6 +5,14 @@ import { apiClient } from '@/lib/api-client';
 import Link from 'next/link';
 import { ArrowLeft, Search, Building2, ExternalLink } from 'lucide-react';
 
+interface FundingRound {
+  id: string;
+  roundType: string;
+  amountRaised: number;
+  currency: string;
+  announcedDate: string;
+}
+
 interface Company {
   id: string;
   name: string;
@@ -14,6 +22,8 @@ interface Company {
   ycBatch?: string;
   foundedDate?: string;
   metadata?: any;
+  fundingRounds?: FundingRound[];
+  totalFunding?: number;
 }
 
 export default function CompaniesPage() {
@@ -172,6 +182,9 @@ export default function CompaniesPage() {
                     Team Size
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Total Funding
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Website
                   </th>
                 </tr>
@@ -216,6 +229,15 @@ export default function CompaniesPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {company.employeeCount || '-'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      {company.totalFunding ? (
+                        <span className="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
+                          ${(company.totalFunding / 1000000).toFixed(1)}M
+                        </span>
+                      ) : (
+                        <span className="text-gray-400">-</span>
+                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       {company.website ? (
