@@ -53,9 +53,9 @@ export default function DashboardPage() {
   async function handleSyncYC() {
     setSyncing(true);
     try {
-      const res = await apiClient.post('/sync/yc', {});
+      const res = await apiClient.post<{ synced: number; errors: number; message?: string }>('/sync/yc', {});
       if (res.success) {
-        const message = res.data?.message || 'YC companies synced successfully!';
+        const message = res.data?.message || `Successfully synced ${res.data?.synced || 0} companies!`;
         alert(message);
         await loadData();
       } else {
