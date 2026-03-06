@@ -78,6 +78,9 @@ export default function CompaniesPage() {
               <Link href="/companies" className="text-blue-600 font-medium">
                 Companies
               </Link>
+              <Link href="/analytics" className="text-gray-700 hover:text-blue-600">
+                Analytics
+              </Link>
             </nav>
           </div>
         </div>

@@ -103,6 +103,9 @@ export default function LaunchesPage() {
               <Link href="/companies" className="text-gray-700 hover:text-blue-600">
                 Companies
               </Link>
+              <Link href="/analytics" className="text-gray-700 hover:text-blue-600">
+                Analytics
+              </Link>
             </nav>
           </div>
         </div>
