@@ -12,7 +12,7 @@ export class CompanyRepository implements ICompanyRepository {
       .where(eq(companies.id, id))
       .limit(1);
 
-    return company || null;
+    return (company as unknown as Company) || null;
   }
 
   async findByName(name: string): Promise<Company | null> {
@@ -22,37 +22,44 @@ export class CompanyRepository implements ICompanyRepository {
       .where(eq(companies.name, name))
       .limit(1);
 
-    return company || null;
+    return (company as unknown as Company) || null;
   }
 
   async findAll(limit: number = 50, offset: number = 0): Promise<Company[]> {
-    return await db.select().from(companies).limit(limit).offset(offset);
+    const results = await db.select().from(companies).limit(limit).offset(offset);
+    return results as unknown as Company[];
   }
 
   async create(input: CreateCompanyInput): Promise<Company> {
+    const values: any = {
+      ...input,
+      foundedDate: input.foundedDate?.toISOString().split('T')[0],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
     const [company] = await db
       .insert(companies)
-      .values({
-        ...input,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      })
+      .values(values)
       .returning();
 
-    return company;
+    return company as unknown as Company;
   }
 
   async update(id: string, input: Partial<CreateCompanyInput>): Promise<Company> {
+    const values: any = {
+      ...input,
+      foundedDate: input.foundedDate?.toISOString().split('T')[0],
+      updatedAt: new Date(),
+    };
+
     const [company] = await db
       .update(companies)
-      .set({
-        ...input,
-        updatedAt: new Date(),
-      })
+      .set(values)
       .where(eq(companies.id, id))
       .returning();
 
-    return company;
+    return company as unknown as Company;
   }
 
   async delete(id: string): Promise<boolean> {
