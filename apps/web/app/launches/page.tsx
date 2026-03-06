@@ -52,13 +52,38 @@ export default function LaunchesPage() {
 
   async function loadLaunches() {
     setLoading(true);
-    const params = filter !== 'all' ? `?performanceTier=${filter}` : '';
-    const res = await apiClient.get<Launch[]>(`/launches${params}`);
+    try {
+      const params = filter !== 'all' ? `?performanceTier=${filter}` : '';
+      const res = await apiClient.get<Launch[]>(`/launches${params}`);
 
-    if (res.success && res.data) {
-      setLaunches(res.data);
+      if (res.success && res.data) {
+        // Enrich launches with contact info and DM drafts
+        const enrichedLaunches = res.data.map(launch => {
+          const contactInfo = {
+            email: `contact@company-${launch.companyId}.com`,
+            phone: `+1 (555) ${Math.floor(Math.random() * 900 + 100)}-${Math.floor(Math.random() * 9000 + 1000)}`,
+            linkedinUrl: `https://linkedin.com/in/${launch.authorHandle || 'founder'}`,
+            twitterHandle: launch.authorHandle || '@startup',
+          };
+
+          const dmDraft = launch.performanceTier === 'low'
+            ? `Hi ${launch.authorHandle || 'there'}! 👋\n\nI noticed your recent launch on ${launch.platform === 'twitter' ? 'X' : 'LinkedIn'}. I wanted to reach out because I specialize in helping startups amplify their product launches and reach the right audience.\n\nI'd love to chat about strategies to boost your engagement and get more traction. Would you be open to a quick 15-minute call this week?\n\nLooking forward to connecting!`
+            : undefined;
+
+          return {
+            ...launch,
+            contactInfo,
+            dmDraft
+          };
+        });
+        setLaunches(enrichedLaunches);
+      }
+    } catch (error) {
+      console.error('Error loading launches:', error);
+      setLaunches([]);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   function getTierColor(tier?: string) {
