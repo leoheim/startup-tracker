@@ -29,6 +29,7 @@ export default function DashboardPage() {
   const [launches, setLaunches] = useState<Launch[]>([]);
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
+  const [seeding, setSeeding] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -68,6 +69,27 @@ export default function DashboardPage() {
       console.error('Sync exception:', error);
     } finally {
       setSyncing(false);
+    }
+  }
+
+  async function handleSeedData() {
+    setSeeding(true);
+    try {
+      const res = await apiClient.post<{ launches: number; message?: string }>('/seed/sample-data', {});
+      if (res.success) {
+        const message = res.data?.message || `Successfully created ${res.data?.launches || 0} sample launches!`;
+        alert(message);
+        await loadData();
+      } else {
+        const errorMsg = res.error || 'Failed to seed sample data. Please try again.';
+        alert(`Error: ${errorMsg}`);
+        console.error('Seed error:', res);
+      }
+    } catch (error) {
+      alert('Unexpected error during seeding. Check console for details.');
+      console.error('Seed exception:', error);
+    } finally {
+      setSeeding(false);
     }
   }
 
@@ -170,19 +192,35 @@ export default function DashboardPage() {
         </div>
 
         {/* Actions */}
-        <div className="mb-8">
-          <button
-            onClick={handleSyncYC}
-            disabled={syncing}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {syncing ? 'Syncing... (this may take 10-30 seconds)' : 'Sync YC Companies'}
-          </button>
-          {syncing && (
-            <p className="mt-2 text-sm text-gray-600">
-              Please wait while we sync 550+ companies from YCombinator...
-            </p>
-          )}
+        <div className="mb-8 flex gap-4">
+          <div>
+            <button
+              onClick={handleSyncYC}
+              disabled={syncing}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {syncing ? 'Syncing... (this may take 10-30 seconds)' : 'Sync YC Companies'}
+            </button>
+            {syncing && (
+              <p className="mt-2 text-sm text-gray-600">
+                Please wait while we sync 550+ companies from YCombinator...
+              </p>
+            )}
+          </div>
+          <div>
+            <button
+              onClick={handleSeedData}
+              disabled={seeding}
+              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {seeding ? 'Generating...' : 'Generate Sample Launches'}
+            </button>
+            {seeding && (
+              <p className="mt-2 text-sm text-gray-600">
+                Creating sample launches with realistic engagement data...
+              </p>
+            )}
+          </div>
         </div>
 
         {/* Recent Companies */}

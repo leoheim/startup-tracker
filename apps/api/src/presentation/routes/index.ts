@@ -6,10 +6,12 @@ import { YCClient } from '../../infrastructure/external-apis/YCClient';
 import { CompanyController } from '../controllers/CompanyController';
 import { LaunchController } from '../controllers/LaunchController';
 import { SyncController } from '../controllers/SyncController';
+import { SeedController } from '../controllers/SeedController';
 
 import { GetLaunchesUseCase } from '../../application/use-cases/GetLaunches';
 import { CreateLaunchUseCase } from '../../application/use-cases/CreateLaunch';
 import { SyncYCCompaniesUseCase } from '../../application/use-cases/SyncYCCompanies';
+import { SeedSampleDataUseCase } from '../../application/use-cases/SeedSampleData';
 
 export function createRouter(): Router {
   const router = Router();
@@ -31,6 +33,10 @@ export function createRouter(): Router {
     ycClient,
     companyRepository
   );
+  const seedSampleDataUseCase = new SeedSampleDataUseCase(
+    companyRepository,
+    launchRepository
+  );
 
   // Initialize controllers
   const companyController = new CompanyController(companyRepository);
@@ -39,6 +45,7 @@ export function createRouter(): Router {
     createLaunchUseCase
   );
   const syncController = new SyncController(syncYCCompaniesUseCase);
+  const seedController = new SeedController(seedSampleDataUseCase);
 
   // Health check
   router.get('/health', (_req: Request, res: Response) => {
@@ -56,6 +63,9 @@ export function createRouter(): Router {
 
   // Sync routes
   router.post('/sync/yc', (req: Request, res: Response) => syncController.syncYCCompanies(req, res));
+
+  // Seed routes
+  router.post('/seed/sample-data', (req: Request, res: Response) => seedController.seedData(req, res));
 
   return router;
 }
