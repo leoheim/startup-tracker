@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import { env } from './config/env';
@@ -22,7 +22,7 @@ async function startServer() {
   app.use(express.urlencoded({ extended: true }));
 
   // Logging middleware
-  app.use((req, res, next) => {
+  app.use((req: Request, _res: Response, next: NextFunction) => {
     logger.info({
       method: req.method,
       path: req.path,

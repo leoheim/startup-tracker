@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { CompanyRepository } from '../../infrastructure/database/repositories/CompanyRepository';
 import { LaunchRepository } from '../../infrastructure/database/repositories/LaunchRepository';
 import { YCClient } from '../../infrastructure/external-apis/YCClient';
@@ -41,21 +41,21 @@ export function createRouter(): Router {
   const syncController = new SyncController(syncYCCompaniesUseCase);
 
   // Health check
-  router.get('/health', (req, res) => {
+  router.get('/health', (_req: Request, res: Response) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
   });
 
   // Company routes
-  router.get('/companies', (req, res) => companyController.getAll(req, res));
-  router.get('/companies/:id', (req, res) => companyController.getById(req, res));
-  router.post('/companies', (req, res) => companyController.create(req, res));
+  router.get('/companies', (req: Request, res: Response) => companyController.getAll(req, res));
+  router.get('/companies/:id', (req: Request, res: Response) => companyController.getById(req, res));
+  router.post('/companies', (req: Request, res: Response) => companyController.create(req, res));
 
   // Launch routes
-  router.get('/launches', (req, res) => launchController.getAll(req, res));
-  router.post('/launches', (req, res) => launchController.create(req, res));
+  router.get('/launches', (req: Request, res: Response) => launchController.getAll(req, res));
+  router.post('/launches', (req: Request, res: Response) => launchController.create(req, res));
 
   // Sync routes
-  router.post('/sync/yc', (req, res) => syncController.syncYCCompanies(req, res));
+  router.post('/sync/yc', (req: Request, res: Response) => syncController.syncYCCompanies(req, res));
 
   return router;
 }

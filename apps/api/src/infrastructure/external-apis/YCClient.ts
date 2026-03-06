@@ -51,11 +51,13 @@ export class YCClient {
         throw new Error(`YC API error: ${response.status} ${response.statusText}`);
       }
 
-      const companies: YCCompany[] = await response.json();
+      const data = await response.json();
 
-      if (!Array.isArray(companies)) {
+      if (!Array.isArray(data)) {
         throw new Error('Invalid API response format');
       }
+
+      const companies: YCCompany[] = data as YCCompany[];
 
       logger.info(`Successfully fetched ${companies.length} YC companies`);
 

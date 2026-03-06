@@ -13,7 +13,7 @@ export class LaunchRepository implements ILaunchRepository {
       .where(eq(launches.id, id))
       .limit(1);
 
-    return launch || null;
+    return (launch as Launch) || null;
   }
 
   async findByUrl(url: string): Promise<Launch | null> {
@@ -23,27 +23,30 @@ export class LaunchRepository implements ILaunchRepository {
       .where(eq(launches.postUrl, url))
       .limit(1);
 
-    return launch || null;
+    return (launch as Launch) || null;
   }
 
   async findByCompany(companyId: string): Promise<Launch[]> {
-    return await db
+    const results = await db
       .select()
       .from(launches)
       .where(eq(launches.companyId, companyId));
+    return results as Launch[];
   }
 
   async findAll(limit: number = 50, offset: number = 0): Promise<Launch[]> {
-    return await db.select().from(launches).limit(limit).offset(offset);
+    const results = await db.select().from(launches).limit(limit).offset(offset);
+    return results as Launch[];
   }
 
   async findByPerformanceTier(
     tier: 'low' | 'medium' | 'high'
   ): Promise<Launch[]> {
-    return await db
+    const results = await db
       .select()
       .from(launches)
       .where(eq(launches.performanceTier, tier));
+    return results as Launch[];
   }
 
   async create(input: CreateLaunchInput): Promise<Launch> {
@@ -70,7 +73,7 @@ export class LaunchRepository implements ILaunchRepository {
       })
       .returning();
 
-    return launch;
+    return launch as Launch;
   }
 
   async update(id: string, input: Partial<Launch>): Promise<Launch> {
@@ -102,7 +105,7 @@ export class LaunchRepository implements ILaunchRepository {
       .where(eq(launches.id, id))
       .returning();
 
-    return launch;
+    return launch as Launch;
   }
 
   async delete(id: string): Promise<boolean> {
